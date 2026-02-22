@@ -13,11 +13,11 @@ export function PrompterEditor() {
 
     useEffect(() => {
         const handler = (e: any) => {
-            const { elapsed, remaining } = e.detail;
+            const { elapsed, remaining, textProgress } = e.detail;
             const total = elapsed + remaining;
 
             if (total > 0) {
-                setProgress(elapsed / total);
+                setProgress(textProgress !== undefined ? textProgress : elapsed / total);
                 setIsPlayingProgress(elapsed > 0 && remaining > 0);
             } else {
                 setIsPlayingProgress(false);

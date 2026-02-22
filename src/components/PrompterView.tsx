@@ -62,9 +62,10 @@ export function PrompterView() {
         const el = textRef.current;
         if (el && pixelsPerSecond > 0) {
             const currentHeight = el.getBoundingClientRect().height;
-            const viewportHeight = window.innerHeight;
-            // The actual scrollable text height (total minus the 100vh padding)
-            const realTextHeight = Math.max(1, currentHeight - viewportHeight);
+            const computedStyle = window.getComputedStyle(el);
+            const pb = parseFloat(computedStyle.paddingBottom) || 0;
+            // The actual scrollable text height (total minus the padding)
+            const realTextHeight = Math.max(1, currentHeight - pb);
             textProgress = Math.min(1, Math.max(0, Math.abs(scrollY) / realTextHeight));
         } else {
             textProgress = durationSeconds > 0 ? elapsed / durationSeconds : 0;
