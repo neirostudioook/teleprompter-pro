@@ -18,7 +18,11 @@ export function useDocumentPip() {
 
     useEffect(() => {
         if (typeof window !== "undefined" && "documentPictureInPicture" in window) {
-            setIsSupported(true);
+            // Document PiP is essentially a desktop feature
+            // Hide on mobile devices by checking screen width
+            if (window.innerWidth > 768) {
+                setIsSupported(true);
+            }
         }
     }, []);
 
