@@ -205,7 +205,7 @@ export function PrompterView() {
             )}
 
             {/* Floating Play Controls overlay strictly for the prompter testing */}
-            <div className={`absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2.5 bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 z-30 transition-all duration-500 ${isPlaying ? 'opacity-20 hover:opacity-100' : 'opacity-100 hover:scale-105'}`}>
+            <div className={`absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2.5 bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 z-30 transition-all duration-500 ${isPlaying ? 'opacity-20 hover:opacity-100' : 'opacity-100 hover:scale-105'}`}>
                 <button
                     onClick={(e) => { e.stopPropagation(); resetScroll(); setIsPlaying(false); }}
                     className="p-1.5 text-white/70 hover:text-white hover:bg-white/10 rounded-full transition-all leading-none"
@@ -229,8 +229,7 @@ export function PrompterView() {
         <>
             <div className={`relative flex-1 bg-black flex flex-col overflow-hidden group ${pipWindow ? 'hidden' : ''} `}>
                 {/* Top Bar Overlay */}
-                <div className="absolute top-0 left-0 right-0 p-3 sm:p-4 flex justify-between items-center z-[100] transition-opacity duration-300 pointer-events-none opacity-0 group-hover:opacity-100">
-                    <div className="text-white/30 text-xs sm:text-sm font-medium bg-black/30 px-2 sm:px-3 py-1 rounded-full pointer-events-auto border border-white/5">Предпросмотр</div>
+                <div className="absolute top-0 right-0 p-3 sm:p-4 flex justify-end items-center z-[100] transition-opacity duration-300 pointer-events-none opacity-0 group-hover:opacity-100">
                     {isSupported && (
                         <button
                             id="pip-btn"

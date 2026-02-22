@@ -40,13 +40,6 @@ export function PiPWindow({ children, pipWindow, closePip }: PiPWindowProps) {
         return createPortal(
             <div className="flex-1 h-full w-full bg-black relative flex flex-col">
                 {children}
-
-                <button
-                    onClick={closePip}
-                    className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 text-white p-2 rounded-full backdrop-blur-md transition-colors z-[100]"
-                >
-                    <X className="w-5 h-5" />
-                </button>
             </div>,
             container
         );
