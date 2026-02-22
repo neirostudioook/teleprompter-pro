@@ -2,7 +2,6 @@
 
 import React, { useRef, useState, useEffect } from "react";
 import { useSettings } from "@/hooks/useSettings";
-import { Textarea } from "@/components/ui/textarea";
 import { Maximize2 } from "lucide-react";
 
 export function PrompterEditor() {
@@ -105,12 +104,12 @@ export function PrompterEditor() {
                     <div className="h-10"></div>
                 </div>
 
-                <Textarea
+                <textarea
                     ref={textareaRef}
                     onScroll={handleScroll}
                     value={settings.text}
                     onChange={(e) => updateSettings({ text: e.target.value })}
-                    className="absolute inset-0 w-full h-full resize-none bg-transparent border-none p-6 text-base leading-relaxed focus-visible:ring-0 z-10 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 overflow-y-auto"
+                    className="absolute inset-0 w-full h-full resize-none bg-transparent outline-none border-none p-6 text-base leading-relaxed focus-visible:ring-0 z-10 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 overflow-y-auto"
                     style={{ fontVariantLigatures: "none" }}
                     placeholder="Введите текст для телесуфлера..."
                 />
