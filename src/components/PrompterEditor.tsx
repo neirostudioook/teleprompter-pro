@@ -1,12 +1,45 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useSettings } from "@/hooks/useSettings";
 import { Textarea } from "@/components/ui/textarea";
 import { Maximize2 } from "lucide-react";
 
 export function PrompterEditor() {
     const { settings, updateSettings } = useSettings();
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const backdropRef = useRef<HTMLDivElement>(null);
+    const [progress, setProgress] = useState(0);
+
+    useEffect(() => {
+        const handler = (e: any) => {
+            const { elapsed, remaining } = e.detail;
+            const total = elapsed + remaining;
+            if (total > 0) {
+                setProgress(elapsed / total);
+            }
+        };
+        window.addEventListener('prompter-progress', handler);
+        return () => window.removeEventListener('prompter-progress', handler);
+    }, []);
+
+    const handleScroll = (e: React.UIEvent<HTMLTextAreaElement>) => {
+        if (backdropRef.current) {
+            backdropRef.current.scrollTop = e.currentTarget.scrollTop;
+            backdropRef.current.scrollLeft = e.currentTarget.scrollLeft;
+        }
+    };
+
+    // Calculate highlighting based on progress
+    const textLen = settings.text.length;
+    const centerIndex = Math.floor(textLen * progress);
+    const chunkSize = 150; // number of characters to highlight
+    const start = Math.max(0, centerIndex - chunkSize / 2);
+    const end = Math.min(textLen, centerIndex + chunkSize / 2);
+
+    const before = settings.text.substring(0, start);
+    const highlight = settings.text.substring(start, end);
+    const after = settings.text.substring(end);
 
     return (
         <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-900 border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-slate-800 p-4 sm:p-6">
@@ -29,12 +62,28 @@ export function PrompterEditor() {
                     </span>
                 </div>
             </div>
-            <Textarea
-                value={settings.text}
-                onChange={(e) => updateSettings({ text: e.target.value })}
-                className="flex-1 resize-none bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 p-6 text-base leading-relaxed focus-visible:ring-2 focus-visible:ring-blue-500 rounded-xl shadow-inner transition-shadow hover:shadow-md"
-                placeholder="Введите текст для телесуфлера..."
-            />
+            <div className="relative flex-1 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-inner transition-shadow hover:shadow-md overflow-hidden focus-within:ring-2 focus-within:ring-blue-500">
+                {/* Backdrop for highlighting */}
+                <div
+                    ref={backdropRef}
+                    className="absolute inset-0 p-6 text-base leading-relaxed whitespace-pre-wrap break-words overflow-hidden pointer-events-none z-0"
+                    style={{ color: "transparent" }}
+                    aria-hidden="true"
+                >
+                    {before}
+                    <mark className="bg-blue-100 dark:bg-blue-900/40 text-transparent rounded px-1 -mx-1">{highlight}</mark>
+                    {after}
+                </div>
+
+                <Textarea
+                    ref={textareaRef}
+                    onScroll={handleScroll}
+                    value={settings.text}
+                    onChange={(e) => updateSettings({ text: e.target.value })}
+                    className="absolute inset-0 w-full h-full resize-none !bg-transparent border-none p-6 text-base leading-relaxed focus-visible:ring-0 rounded-xl z-10 text-slate-900 dark:text-slate-100 placeholder:text-slate-500"
+                    placeholder="Введите текст для телесуфлера..."
+                />
+            </div>
         </div>
     );
 }

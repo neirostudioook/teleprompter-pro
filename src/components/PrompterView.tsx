@@ -154,27 +154,28 @@ export function PrompterView() {
             {/* Big Play Overlay when paused */}
             {!isPlaying && (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 transition-opacity">
-                    <div className="w-12 h-12 bg-white/0 hover:bg-white/5 rounded-full flex items-center justify-center animate-pulse border border-white/5">
-                        <Play className="w-6 h-6 text-white/20 ml-1" />
+                    <div className="w-24 h-24 bg-black/20 hover:bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center animate-pulse border border-white/10">
+                        <Play className="w-12 h-12 text-white/50 ml-2" />
                     </div>
                 </div>
             )}
 
             {/* Floating Play Controls overlay strictly for the prompter testing */}
-            <div className={`absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-black/0 hover:bg-black/40 hover:backdrop-blur-md px-2 py-1 rounded-full border border-transparent hover:border-white/10 z-30 transition-all duration-500 ${isPlaying ? 'opacity-0 hover:opacity-100' : 'opacity-40 hover:opacity-100'}`}>
+            <div className={`absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/20 z-30 transition-all duration-500 ${isPlaying ? 'opacity-20 hover:opacity-100' : 'opacity-100 hover:scale-105'}`}>
                 <button
                     onClick={(e) => { e.stopPropagation(); resetScroll(); setIsPlaying(false); }}
-                    className="p-1 text-white/30 hover:text-white rounded-full transition-colors leading-none"
+                    className="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-full transition-all leading-none"
                     title="В начало"
                 >
-                    <RotateCcw className="w-3 h-3 flex-shrink-0" />
+                    <RotateCcw className="w-6 h-6 flex-shrink-0" />
                 </button>
+                <div className="w-px h-8 bg-white/20"></div>
                 <button
                     onClick={(e) => { e.stopPropagation(); setIsPlaying(!isPlaying); }}
-                    className="w-6 h-6 bg-white/0 hover:bg-white/10 text-white/40 hover:text-white rounded-full flex items-center justify-center transition-colors leading-none"
+                    className="p-3 bg-white/10 hover:bg-blue-600 text-white hover:text-white rounded-full flex items-center justify-center transition-all leading-none shadow-lg"
                     title={isPlaying ? "Пауза" : "Старт"}
                 >
-                    {isPlaying ? <Pause className="w-2.5 h-2.5 flex-shrink-0" /> : <Play className="w-2.5 h-2.5 ml-0.5 flex-shrink-0" />}
+                    {isPlaying ? <Pause className="w-8 h-8 flex-shrink-0" /> : <Play className="w-8 h-8 ml-1 flex-shrink-0" />}
                 </button>
             </div>
         </div>
