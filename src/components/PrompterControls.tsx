@@ -86,7 +86,10 @@ export function PrompterControls() {
                                 <Play className="w-4 h-4" />
                                 Скорость
                             </Label>
-                            <span className="text-sm font-medium">{settings.speed}</span>
+                            <div className="flex items-center gap-3">
+                                <span className="text-xs text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full" title="Общая длительность">⏱ {formatDuration(durationSeconds)}</span>
+                                <span className="text-sm font-medium">{settings.speed}</span>
+                            </div>
                         </div>
                         <Slider
                             value={[settings.speed]}

@@ -101,10 +101,41 @@ export function PrompterView() {
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, []);
 
-    // Handle manual scroll via mouse wheel
+    // Handle mouse wheel with boundary constraints
     const handleWheel = (e: React.WheelEvent) => {
-        manualScroll(e.deltaY);
+        const el = textRef.current;
+        if (!el) {
+            manualScroll(e.deltaY);
+            return;
+        }
+
+        const currentHeight = el.getBoundingClientRect().height;
+        const computedStyle = window.getComputedStyle(el);
+        const pb = parseFloat(computedStyle.paddingBottom) || 0;
+        const realTextHeight = Math.max(1, currentHeight - pb);
+
+        setScrollY(prev => {
+            const next = prev - e.deltaY;
+            // Clamp between 0 (top) and -realTextHeight (bottom)
+            return Math.min(0, Math.max(-realTextHeight, next));
+        });
     };
+
+    // Auto-pause when reaching the end
+    useEffect(() => {
+        const el = textRef.current;
+        if (el && isPlaying && pixelsPerSecond > 0) {
+            const currentHeight = el.getBoundingClientRect().height;
+            const computedStyle = window.getComputedStyle(el);
+            const pb = parseFloat(computedStyle.paddingBottom) || 0;
+            const realTextHeight = Math.max(1, currentHeight - pb);
+
+            if (scrollY <= -realTextHeight) {
+                setIsPlaying(false);
+                setScrollY(-realTextHeight);
+            }
+        }
+    }, [scrollY, isPlaying, pixelsPerSecond, setScrollY]);
 
     const PrompterContent = (
         <div className="flex-1 w-full flex justify-center py-4 relative group/pip">
