@@ -78,7 +78,7 @@ export function PrompterEditor() {
                 <div className="flex items-center gap-2">
                     <button
                         onClick={() => document.getElementById('pip-btn')?.click()}
-                        className="text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/40 hover:bg-blue-200 dark:hover:bg-blue-900/60 px-2.5 py-1.5 rounded-md flex items-center gap-1.5 transition-colors shadow-sm"
+                        className="hidden lg:flex text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/40 hover:bg-blue-200 dark:hover:bg-blue-900/60 px-2.5 py-1.5 rounded-md  items-center gap-1.5 transition-colors shadow-sm"
                         title="Открыть суфлер в мини-окне поверх всех окон"
                     >
                         <Maximize2 className="w-3.5 h-3.5" />
