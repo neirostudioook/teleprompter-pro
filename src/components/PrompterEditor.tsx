@@ -10,13 +10,18 @@ export function PrompterEditor() {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const backdropRef = useRef<HTMLDivElement>(null);
     const [progress, setProgress] = useState(0);
+    const [isPlayingProgress, setIsPlayingProgress] = useState(false);
 
     useEffect(() => {
         const handler = (e: any) => {
             const { elapsed, remaining } = e.detail;
             const total = elapsed + remaining;
+
             if (total > 0) {
                 setProgress(elapsed / total);
+                setIsPlayingProgress(elapsed > 0 && remaining > 0);
+            } else {
+                setIsPlayingProgress(false);
             }
         };
         window.addEventListener('prompter-progress', handler);
@@ -32,14 +37,37 @@ export function PrompterEditor() {
 
     // Calculate highlighting based on progress
     const textLen = settings.text.length;
+
+    // Instead of raw index, we might want to highlight a sliding window of text
+    // We highlight roughly where the user should be reading
+    const charsPerScreen = 300; // Expected chars visible on prompter screen
     const centerIndex = Math.floor(textLen * progress);
-    const chunkSize = 150; // number of characters to highlight
-    const start = Math.max(0, centerIndex - chunkSize / 2);
-    const end = Math.min(textLen, centerIndex + chunkSize / 2);
+
+    // Smooth the highlight chunk
+    const highlightLength = 100;
+    const start = Math.max(0, centerIndex - highlightLength / 2);
+    const end = Math.min(textLen, centerIndex + highlightLength / 2);
 
     const before = settings.text.substring(0, start);
     const highlight = settings.text.substring(start, end);
     const after = settings.text.substring(end);
+
+    // Auto-scroll the backdrop to keep highlight in center
+    useEffect(() => {
+        if (backdropRef.current && textareaRef.current && isPlayingProgress) {
+            // Rough estimation of scroll position based on progress
+            const scrollHeight = textareaRef.current.scrollHeight;
+            const clientHeight = textareaRef.current.clientHeight;
+            const maxScroll = Math.max(0, scrollHeight - clientHeight);
+
+            // Only auto-scroll if progress is actually updating
+            const targetScroll = maxScroll * progress;
+
+            // Apply to both to keep them synced
+            backdropRef.current.scrollTop = targetScroll;
+            textareaRef.current.scrollTop = targetScroll;
+        }
+    }, [progress]);
 
     return (
         <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-900 border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-slate-800 p-4 sm:p-6">
@@ -66,13 +94,15 @@ export function PrompterEditor() {
                 {/* Backdrop for highlighting */}
                 <div
                     ref={backdropRef}
-                    className="absolute inset-0 p-6 text-base leading-relaxed whitespace-pre-wrap break-words overflow-hidden pointer-events-none z-0"
-                    style={{ color: "transparent" }}
+                    className="absolute inset-0 p-6 text-base leading-relaxed whitespace-pre-wrap break-words overflow-y-auto pointer-events-none z-0 scrollbar-hide"
+                    style={{ color: "transparent", fontVariantLigatures: "none" }}
                     aria-hidden="true"
                 >
                     {before}
-                    <mark className="bg-blue-100 dark:bg-blue-900/40 text-transparent rounded px-1 -mx-1">{highlight}</mark>
+                    <mark className="bg-blue-200/50 dark:bg-blue-600/30 text-transparent rounded px-1 -mx-1 transition-all duration-300">{highlight}</mark>
                     {after}
+                    {/* Add extra padding at the bottom so it can scroll fully */}
+                    <div className="h-10"></div>
                 </div>
 
                 <Textarea
@@ -80,7 +110,8 @@ export function PrompterEditor() {
                     onScroll={handleScroll}
                     value={settings.text}
                     onChange={(e) => updateSettings({ text: e.target.value })}
-                    className="absolute inset-0 w-full h-full resize-none !bg-transparent border-none p-6 text-base leading-relaxed focus-visible:ring-0 rounded-xl z-10 text-slate-900 dark:text-slate-100 placeholder:text-slate-500"
+                    className="absolute inset-0 w-full h-full resize-none bg-transparent border-none p-6 text-base leading-relaxed focus-visible:ring-0 z-10 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 overflow-y-auto"
+                    style={{ fontVariantLigatures: "none" }}
                     placeholder="Введите текст для телесуфлера..."
                 />
             </div>
