@@ -7,7 +7,7 @@ import { PrompterView } from "@/components/PrompterView";
 export default function Home() {
   return (
     <SettingsProvider>
-      <main className="flex flex-col lg:flex-row min-h-[100dvh] w-full bg-slate-100 overflow-y-auto lg:overflow-hidden font-sans text-slate-900">
+      <main className="flex flex-col lg:flex-row min-h-[100dvh] lg:h-[100dvh] w-full bg-slate-100 overflow-y-auto lg:overflow-hidden font-sans text-slate-900">
 
         {/* Left Sidebar - Editor */}
         <aside className="w-full lg:w-[400px] shrink-0 h-[40vh] lg:h-full shadow-lg z-10 flex flex-col border-b lg:border-b-0 lg:border-r border-slate-200 order-1 lg:order-none">
@@ -15,7 +15,7 @@ export default function Home() {
             <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center font-bold text-xl shadow-inner">T</div>
             <h1 className="text-xl font-bold tracking-tight">Teleprompter Pro</h1>
           </div>
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-hidden flex flex-col h-full">
             <PrompterEditor />
           </div>
         </aside>
